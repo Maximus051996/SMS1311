@@ -92,7 +92,7 @@ app.UseStatusCodePages(async statusCodeContext =>
     statusCodeContext.HttpContext.Response.ContentType = Text.Plain;
 
     await statusCodeContext.HttpContext.Response.WriteAsync(
-        $"Please Contact with Administrator or Api Not Found , Status Code : {statusCodeContext.HttpContext.Response.StatusCode}");
+        $"Hey, Please Contact with Administrator or Api Not Found , Status Code : {statusCodeContext.HttpContext.Response.StatusCode}");
 });
 app.UseCors("default");
 app.UseHttpsRedirection();
