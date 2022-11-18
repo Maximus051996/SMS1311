@@ -19,13 +19,16 @@ namespace StockManagementSystemBackend.Controllers
 
         private IUser _IUser;
         private IRole _IRole;
+        private readonly IEmail mailService;
+        
 
-        public UsersController(IConfiguration configuration, ApplicationDbContext applicationDbContext, IUser IUser, IRole IRole)
+        public UsersController(IConfiguration configuration, ApplicationDbContext applicationDbContext, IUser IUser, IRole IRole, IEmail mailService)
         {
             _configuration = configuration;
             _applicationDbContext = applicationDbContext;
             _IUser = IUser;
             _IRole = IRole;
+            this.mailService = mailService;
         }
 
         [HttpPost("EnableDisableUser")]
@@ -94,6 +97,7 @@ namespace StockManagementSystemBackend.Controllers
 
                     if (result > 0)
                     {
+                        await mailService.SendEmailAsync(userDTO.Email, userDTO.UserName, userDTO.UserPassword, "Admin");
                         return Ok(new { Message = userDTO.UserId > 0 ? Enums.Update.GetDescription() : Enums.Insert.GetDescription(), IsSuccess = "True" });
                     }
                     else if (result == 0 || result == -1)
