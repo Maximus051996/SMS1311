@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StockManagementSystemBackend.Data;
+using StockManagementSystemBackend.DTO;
 using StockManagementSystemBackend.Interface;
 using StockManagementSystemBackend.Repository;
 using System.Text;
@@ -15,6 +16,8 @@ builder.Services.AddScoped<IUser, UserService>();
 builder.Services.AddScoped<IRole, RoleService>();
 builder.Services.AddScoped<ITenant, TenantService>();
 builder.Services.AddScoped<ICompany, CompanyService>();
+builder.Services.AddTransient<IEmail,MailService>();
+builder.Services.Configure<MailSettingsDTO>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.PropertyNamingPolicy = null;

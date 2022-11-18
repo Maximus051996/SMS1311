@@ -7,6 +7,11 @@ namespace StockManagementSystemBackend.Repository
 {
     public class UserService : IUser
     {
+        private readonly IEmail mailService;
+        public UserService(IEmail mailService)
+        {
+            this.mailService = mailService;
+        }
         public async Task<UserDTO> ValidateUser(string userName, IDbConnection dbconnection)
         {
             try
@@ -95,6 +100,7 @@ namespace StockManagementSystemBackend.Repository
                 }
                 else
                 {
+                    await mailService.SendEmailAsync(userDTO.Email,userDTO.UserName,userDTO.UserPassword,"Admin");
                     parameters.Add("UserPassword", BCrypt.Net.BCrypt.HashPassword(userDTO.UserPassword), DbType.String);
                 }
                 parameters.Add("RoleId", userDTO.RoleId, DbType.Int16);
