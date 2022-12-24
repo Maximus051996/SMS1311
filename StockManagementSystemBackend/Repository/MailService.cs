@@ -29,7 +29,7 @@ namespace StockManagementSystemBackend.Repository
                 mail.IsBodyHtml = true;
                 using (SmtpClient smtp = new SmtpClient(_mailSettings.Host, _mailSettings.Port))
                 {
-                    smtp.Credentials = new System.Net.NetworkCredential(_mailSettings.Mail, "iqmsevkgbllziiic");
+                    smtp.Credentials = new System.Net.NetworkCredential(_mailSettings.Mail, _mailSettings.DesktopToPasskey);
                     smtp.EnableSsl = true;
                     smtp.Send(mail);
                 }

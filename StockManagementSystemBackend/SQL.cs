@@ -92,6 +92,12 @@
                          " Begin INSERT INTO [dbo].[CompanyMaster_New_Maa_Durga_Store] (CompanyName,TenantId, CreatedDateTime,Priroty, IsActive) " +
                          "VALUES(@CompanyName,@TenantId, GETUTCDATE(),@Priroty, @IsActive) Select 1 End Else Begin Select 0 End";
 
+        public const string GetNewMaaDurgaAllCompanies = @"Select CompanyId,CompanyName,Priroty,IsActive from [dbo].[CompanyMaster_New_Maa_Durga_Store]";
+
+        public const string GetComapanyByNewMaaDurgaStore = @"Select CompanyId,CompanyName,Priroty,IsActive from [dbo].[CompanyMaster_New_Maa_Durga_Store] where"
+                                                              +" CompanyId=@CompanyId";
+
+        public const string DeleteCompanyMaaDurga = "Delete from [dbo].[CompanyMaster_New_Maa_Durga_Store] where CompanyId=@CompanyId and TenantId=@TenantId";
         #endregion
     }
 }

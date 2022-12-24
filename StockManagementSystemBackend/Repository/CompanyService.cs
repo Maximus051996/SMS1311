@@ -64,5 +64,77 @@ namespace StockManagementSystemBackend.Repository
             }
 
         }
+
+        public async Task<IEnumerable<CompanyDTO>> GetAllCompaniesByTenant(int TenantId, IDbConnection dbconnection)
+        {
+            try
+            {
+                using(var connection = dbconnection)
+                {
+                    string Query = string.Empty;
+                    if (TenantId == 1)
+                    {
+                        Query = SQL.GetNewMaaDurgaAllCompanies;
+                    }
+                    return (await connection.QueryAsync<CompanyDTO>(Query)).ToList();
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message, ex); 
+            }
+        }
+
+        public async Task<CompanyDTO> GetCompanyByTenant(int TenantId, int CompanyId, IDbConnection dbconnection)
+        {
+            try
+            {
+                var parameters = new DynamicParameters();
+                string Query = string.Empty;
+                parameters.Add("TenantId", TenantId, DbType.Int32);
+                parameters.Add("CompanyId", CompanyId, DbType.Int32);             
+                switch (TenantId)
+                {
+                    case 1:
+                        Query = SQL.GetComapanyByNewMaaDurgaStore;
+                        break;                     
+                }
+                using (var connection = dbconnection)
+                {
+                    return await connection.QueryFirstOrDefaultAsync<CompanyDTO>(Query, parameters);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
+        public async Task<int> DeleteCompanyByTenant(int TenantId, int CompanyId, IDbConnection dbconnection)
+        {
+            try
+            {
+                var parameters = new DynamicParameters();
+                string Query = string.Empty;
+                parameters.Add("TenantId", TenantId, DbType.Int32);
+                parameters.Add("CompanyId", CompanyId, DbType.Int32);
+                switch (TenantId)
+                {
+                    case 1:
+                        Query = SQL.DeleteCompanyMaaDurga;
+                        break;
+                }
+                using (var connection = dbconnection)
+                {
+                    return await connection.ExecuteAsync(Query, parameters);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
     }
 }

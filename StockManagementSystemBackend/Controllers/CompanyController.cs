@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using StockManagementSystemBackend.Data;
@@ -8,6 +9,7 @@ namespace StockManagementSystemBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class CompanyController : ControllerBase
     {
         public IConfiguration _configuration;
@@ -56,5 +58,60 @@ namespace StockManagementSystemBackend.Controllers
             }
 
         }
+
+        [HttpGet("GetAllCompaniesByTenant")]
+        public async Task<IActionResult> GetAllCompaniesByTenant(string TenantName, string UserName)
+        {
+            int TenantId = await _ITenant.ValidUserTenantId(TenantName, UserName, new SqlConnection(_configuration.GetConnectionString("DefaultConnection")));
+            var result = await _ICompany.GetAllCompaniesByTenant(TenantId, new SqlConnection(_configuration.GetConnectionString("DefaultConnection")));
+            if (result.Count() > 0)
+            {
+                return Ok(new { Message = Enums.Fetch.GetDescription(), IsSuccess = "True", Records = result });
+            }
+            else
+            {
+                return BadRequest(new { Message = Enums.Failure.GetDescription(), IsSuccess = "False" });
+            }
+        }
+
+        [HttpPost("GetCompanyByTenant")]
+        public async Task<IActionResult> GetCompanyByTenant(string TenantName, string UserName,int CompanyId)
+        {
+            int TenantId = await _ITenant.ValidUserTenantId(TenantName, UserName, new SqlConnection(_configuration.GetConnectionString("DefaultConnection")));
+
+            var result = await _ICompany.GetCompanyByTenant(TenantId, CompanyId, new SqlConnection(_configuration.GetConnectionString("DefaultConnection")));
+
+            if (result != null)
+            {
+                return Ok(new { Message = Enums.Fetch.GetDescription(), IsSuccess = "True" , Records = result });
+            }
+            else
+            {
+                return BadRequest(new { Message = Enums.Failure.GetDescription(), IsSuccess = "False" });
+            }
+        }
+
+        [HttpDelete("DeleteCompanyByTenant")]
+        public async Task<IActionResult> UpdateCompanyByTenant(string TenantName, string UserName, int CompanyId)
+        {
+            int TenantId = await _ITenant.ValidUserTenantId(TenantName, UserName, new SqlConnection(_configuration.GetConnectionString("DefaultConnection")));
+
+            var result = await _ICompany.DeleteCompanyByTenant(TenantId, CompanyId, new SqlConnection(_configuration.GetConnectionString("DefaultConnection")));
+
+            if (result > 0)
+            {
+                return Ok(new { Message = Enums.Delete.GetDescription(), IsSuccess = "True", Records = result });
+            }
+            else
+            {
+                return BadRequest(new { Message = Enums.Failure.GetDescription(), IsSuccess = "False" });
+            }
+        }
+
+
+
+
+
+
     }
 }
