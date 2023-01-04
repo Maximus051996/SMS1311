@@ -19,7 +19,7 @@ namespace StockManagementSystemBackend.Controllers
         {
             try
             {
-                await mailService.SendEmailAsync(EmailAddress,"Sayan","CC","Admin");
+                //await mailService.SendEmailAsync(EmailAddress,"Sayan","CC","Admin");
                 return Ok();
             }
             catch (Exception ex)

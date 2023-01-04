@@ -16,6 +16,8 @@ namespace StockManagementSystemBackend.DTO
         public int TenantId { get; set; }
         public string? TenantName { get; set; }
         public bool? IsActive { get; set; }
+        public string? Operation { get; set; }
+
     }
     public class UserEnableDisableDTO
     {

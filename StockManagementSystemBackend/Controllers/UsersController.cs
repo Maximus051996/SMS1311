@@ -19,15 +19,17 @@ namespace StockManagementSystemBackend.Controllers
 
         private IUser _IUser;
         private IRole _IRole;
+        private ITenant _ITenant;
         private readonly IEmail mailService;
         
 
-        public UsersController(IConfiguration configuration, ApplicationDbContext applicationDbContext, IUser IUser, IRole IRole, IEmail mailService)
+        public UsersController(IConfiguration configuration, ApplicationDbContext applicationDbContext, IUser IUser, IRole IRole, ITenant ITenant, IEmail mailService)
         {
             _configuration = configuration;
             _applicationDbContext = applicationDbContext;
             _IUser = IUser;
             _IRole = IRole;
+            _ITenant = ITenant;
             this.mailService = mailService;
         }
 
@@ -94,10 +96,13 @@ namespace StockManagementSystemBackend.Controllers
                         userDTO.RoleId = roledetails.Where(x => x.RoleName == userDTO.RoleName).Select(c => c.RoleId).ToList()[0];
                     }
                     var result = await _IUser.InsertUpdateUser(userDTO, new SqlConnection(_configuration.GetConnectionString("DefaultConnection")));
-
+                    var tenantDetails = await _ITenant.GetTenantById(userDTO.TenantId, new SqlConnection(_configuration.GetConnectionString("DefaultConnection")));
                     if (result > 0)
                     {
-                        await mailService.SendEmailAsync(userDTO.Email, userDTO.UserName, userDTO.UserPassword, "Admin");
+                        if(userDTO.Operation == "Insert")
+                        {
+                            await mailService.SendEmailAsync(userDTO.Email, tenantDetails.TenantName, userDTO.UserName, userDTO.UserPassword, "Admin");
+                        }                
                         return Ok(new { Message = userDTO.UserId > 0 ? Enums.Update.GetDescription() : Enums.Insert.GetDescription(), IsSuccess = "True" });
                     }
                     else if (result == 0 || result == -1)

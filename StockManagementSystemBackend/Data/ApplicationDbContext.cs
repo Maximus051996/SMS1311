@@ -17,6 +17,7 @@ namespace StockManagementSystemBackend.Data
         public DbSet<CompanyMaster> CompanyMaster { get; set; }
 
         public DbSet<ProductMaster> ProductMaster { get; set; }
+        public DbSet<FormulaMaster> FormulaMaster { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -45,8 +46,12 @@ namespace StockManagementSystemBackend.Data
            .IsUnique();
 
             modelBuilder.Entity<ProductMaster>()
-          .HasIndex(u => u.ProductName)
-          .IsUnique();
+           .HasIndex(u => u.ProductName)
+           .IsUnique();
+
+            modelBuilder.Entity<FormulaMaster>()
+            .HasIndex(u => u.Formula)
+            .IsUnique();
 
 
             var cascadeFKs = modelBuilder.Model.GetEntityTypes()

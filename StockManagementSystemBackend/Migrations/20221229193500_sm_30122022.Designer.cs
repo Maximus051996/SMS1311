@@ -12,8 +12,8 @@ using StockManagementSystemBackend.Data;
 namespace StockManagementSystemBackend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220820131903_sm_20082022")]
-    partial class sm_20082022
+    [Migration("20221229193500_sm_30122022")]
+    partial class sm_30122022
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -45,6 +45,9 @@ namespace StockManagementSystemBackend.Migrations
                     b.Property<DateTime?>("ModifiedDateTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Priroty")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("TenantId")
                         .HasColumnType("int");
 
@@ -58,6 +61,34 @@ namespace StockManagementSystemBackend.Migrations
                     b.ToTable("CompanyMaster");
                 });
 
+            modelBuilder.Entity("StockManagementSystemBackend.Models.FormulaMaster", b =>
+                {
+                    b.Property<long>("FId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("FId"), 1L, 1);
+
+                    b.Property<string>("Formula")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FId");
+
+                    b.HasIndex("Formula")
+                        .IsUnique();
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("FormulaMaster");
+                });
+
             modelBuilder.Entity("StockManagementSystemBackend.Models.ProductMaster", b =>
                 {
                     b.Property<long>("ProductId")
@@ -66,6 +97,9 @@ namespace StockManagementSystemBackend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ProductId"), 1L, 1);
 
+                    b.Property<decimal?>("ActualPrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<long?>("CompantyId")
                         .IsRequired()
                         .HasColumnType("bigint");
@@ -73,8 +107,14 @@ namespace StockManagementSystemBackend.Migrations
                     b.Property<DateTime?>("CreatedDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Formula")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal?>("Default_Percentage")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("DiscountRate_Percentage")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long?>("FId")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -82,11 +122,8 @@ namespace StockManagementSystemBackend.Migrations
                     b.Property<decimal?>("MRP")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime?>("ModifiedDateTime")
+                    b.Property<DateTime?>("ManufacturingDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<decimal?>("Percentage")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
@@ -95,12 +132,17 @@ namespace StockManagementSystemBackend.Migrations
                     b.Property<long?>("Quantity")
                         .HasColumnType("bigint");
 
+                    b.Property<decimal?>("Special_Percentage")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("TenantId")
                         .HasColumnType("int");
 
                     b.HasKey("ProductId");
 
                     b.HasIndex("CompantyId");
+
+                    b.HasIndex("FId");
 
                     b.HasIndex("ProductName")
                         .IsUnique();
@@ -246,6 +288,17 @@ namespace StockManagementSystemBackend.Migrations
                     b.Navigation("TenantMaster");
                 });
 
+            modelBuilder.Entity("StockManagementSystemBackend.Models.FormulaMaster", b =>
+                {
+                    b.HasOne("StockManagementSystemBackend.Models.TenantMaster", "TenantMaster")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("TenantMaster");
+                });
+
             modelBuilder.Entity("StockManagementSystemBackend.Models.ProductMaster", b =>
                 {
                     b.HasOne("StockManagementSystemBackend.Models.CompanyMaster", "CompanyMaster")
@@ -254,6 +307,10 @@ namespace StockManagementSystemBackend.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("StockManagementSystemBackend.Models.FormulaMaster", "FormulaMaster")
+                        .WithMany()
+                        .HasForeignKey("FId");
+
                     b.HasOne("StockManagementSystemBackend.Models.TenantMaster", "TenantMaster")
                         .WithMany()
                         .HasForeignKey("TenantId")
@@ -261,6 +318,8 @@ namespace StockManagementSystemBackend.Migrations
                         .IsRequired();
 
                     b.Navigation("CompanyMaster");
+
+                    b.Navigation("FormulaMaster");
 
                     b.Navigation("TenantMaster");
                 });

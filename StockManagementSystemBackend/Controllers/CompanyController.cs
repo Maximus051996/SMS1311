@@ -13,7 +13,6 @@ namespace StockManagementSystemBackend.Controllers
     public class CompanyController : ControllerBase
     {
         public IConfiguration _configuration;
-
         public readonly ApplicationDbContext _applicationDbContext;
         private ICompany _ICompany;
         private ITenant _ITenant;
@@ -74,7 +73,7 @@ namespace StockManagementSystemBackend.Controllers
             }
         }
 
-        [HttpPost("GetCompanyByTenant")]
+        [HttpGet("GetCompanyByTenant")]
         public async Task<IActionResult> GetCompanyByTenant(string TenantName, string UserName,int CompanyId)
         {
             int TenantId = await _ITenant.ValidUserTenantId(TenantName, UserName, new SqlConnection(_configuration.GetConnectionString("DefaultConnection")));
@@ -91,7 +90,7 @@ namespace StockManagementSystemBackend.Controllers
             }
         }
 
-        [HttpDelete("DeleteCompanyByTenant")]
+        [HttpPost("DeleteCompanyByTenant")]
         public async Task<IActionResult> UpdateCompanyByTenant(string TenantName, string UserName, int CompanyId)
         {
             int TenantId = await _ITenant.ValidUserTenantId(TenantName, UserName, new SqlConnection(_configuration.GetConnectionString("DefaultConnection")));
@@ -100,7 +99,7 @@ namespace StockManagementSystemBackend.Controllers
 
             if (result > 0)
             {
-                return Ok(new { Message = Enums.Delete.GetDescription(), IsSuccess = "True", Records = result });
+                return Ok(new { Message = Enums.HardDelete.GetDescription(), IsSuccess = "True", Records = result });
             }
             else
             {

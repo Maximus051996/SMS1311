@@ -23,15 +23,17 @@ namespace StockManagementSystemBackend
         [Description("Please Fill All the Fields")]
         ValidationError=9,
         [Description("Record Already Exist")]
-        Dublicate,
+        Dublicate=10,
         [Description("Unknown Error Came, Please Try Again After some time")]
-        Unknown,
+        Unknown=11,
         [Description("File Is Empty")]
-        FileEmpty,
+        FileEmpty=12,
         [Description("File Format Is Not Correct")]
-        FileFormat,
+        FileFormat=13,
         [Description("User not have Permission")]
-        UserInvalid
+        UserInvalid=14,
+        [Description("Record Deleted Successfully")]
+        HardDelete
 
     }
 

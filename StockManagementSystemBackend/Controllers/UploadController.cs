@@ -32,8 +32,8 @@ namespace StockManagementSystemBackend.Controllers
         public async Task<IActionResult> UploadExcel(string fileType, string tenantName, string userName)
         {
 
-
-            int tenantId = 0;
+            int count=0;
+            int tenantId;
             tenantId = await _ITenant.ValidUserTenantId(tenantName, userName, new SqlConnection(_configuration.GetConnectionString("DefaultConnection")));
             if (tenantId == 0)
             {
@@ -52,37 +52,40 @@ namespace StockManagementSystemBackend.Controllers
                 {
                     return Ok(new { Message = Enums.FileFormat.GetDescription(), IsSuccess = "False" });
                 }
-                var list = new List<CompanyDTO>();
-                using (var stream = new MemoryStream())
-                {
-                    await formFile.CopyToAsync(stream);
 
-                    using (var package = new ExcelPackage(stream))
-                    {
-                        ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
-                        var rowCount = worksheet.Dimension.Rows;
-                        for (var row = 2; row <= rowCount; row++)
-                        {
-                            list.Add(new CompanyDTO
-                            {
-                                CompanyName = worksheet.Cells[row, 1].Value.ToString()?.Trim(),
-                                Priroty = worksheet.Cells[row, 2].Value.ToString()?.Trim()
-                            });
 
-                        }
-
-                    }
-                }
                 switch (fileType)
                 {
                     case "Company":
-                        await _ICompany.InsertBulkCompany(list, tenantId, new SqlConnection(_configuration.GetConnectionString("DefaultConnection")));
+                        {                        
+                          var productList = new List<CompanyDTO>();
+                          using (var stream = new MemoryStream())
+                          {
+                              await formFile.CopyToAsync(stream);
+
+                              using (var package = new ExcelPackage(stream))
+                              {
+                                  ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                                  var rowCount = worksheet.Dimension.Rows;
+                                  for (var row = 2; row <= rowCount; row++)
+                                  {
+                                      productList.Add(new CompanyDTO
+                                      {
+                                          CompanyName = worksheet.Cells[row, 1].Value.ToString()?.Trim(),
+                                          Priroty = worksheet.Cells[row, 2].Value.ToString()?.Trim()
+                                      });
+
+                                  }
+                              }
+                          }
+                          count= await _ICompany.InsertBulkCompany(productList, tenantId, new SqlConnection(_configuration.GetConnectionString("DefaultConnection")));
+                        }
                         break;
                     case "Product":
                         Console.WriteLine("Product");
                         break;
                 }
-                return Ok(new { Message = Enums.Insert.GetDescription(), IsSuccess = "True" });
+                return Ok(new { Message = count == -1 ? Enums.Dublicate.GetDescription() : Enums.Insert.GetDescription(), IsSuccess = "True" });
 
             }
         }

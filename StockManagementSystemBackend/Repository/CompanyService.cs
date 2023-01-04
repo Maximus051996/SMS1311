@@ -50,12 +50,7 @@ namespace StockManagementSystemBackend.Repository
 
                 using (var connection = dbconnection)
                 {
-                    string Query = string.Empty;
-                    if (TenantId == 1)
-                    {
-                        Query = SQL.InsertCompanyNewMaaDurga;
-                    }
-                    return await connection.ExecuteAsync(Query, parameters);
+                  return await connection.ExecuteAsync(SQL.InsertCompany, parameters);
                 }
             }
             catch (Exception ex)
@@ -69,14 +64,11 @@ namespace StockManagementSystemBackend.Repository
         {
             try
             {
-                using(var connection = dbconnection)
+                var parameters = new DynamicParameters();
+                parameters.Add("TenantId", TenantId, DbType.Int16);
+                using (var connection = dbconnection)
                 {
-                    string Query = string.Empty;
-                    if (TenantId == 1)
-                    {
-                        Query = SQL.GetNewMaaDurgaAllCompanies;
-                    }
-                    return (await connection.QueryAsync<CompanyDTO>(Query)).ToList();
+                  return (await connection.QueryAsync<CompanyDTO>(SQL.GetAllCompaniesbyTenantId, parameters)).ToList();
                 }
 
             }
@@ -94,16 +86,10 @@ namespace StockManagementSystemBackend.Repository
                 var parameters = new DynamicParameters();
                 string Query = string.Empty;
                 parameters.Add("TenantId", TenantId, DbType.Int32);
-                parameters.Add("CompanyId", CompanyId, DbType.Int32);             
-                switch (TenantId)
-                {
-                    case 1:
-                        Query = SQL.GetComapanyByNewMaaDurgaStore;
-                        break;                     
-                }
+                parameters.Add("CompanyId", CompanyId, DbType.Int32);    
                 using (var connection = dbconnection)
                 {
-                    return await connection.QueryFirstOrDefaultAsync<CompanyDTO>(Query, parameters);
+                    return await connection.QueryFirstOrDefaultAsync<CompanyDTO>(SQL.GetComapanyByTenantId, parameters);
                 }
             }
             catch (Exception ex)
@@ -119,16 +105,10 @@ namespace StockManagementSystemBackend.Repository
                 var parameters = new DynamicParameters();
                 string Query = string.Empty;
                 parameters.Add("TenantId", TenantId, DbType.Int32);
-                parameters.Add("CompanyId", CompanyId, DbType.Int32);
-                switch (TenantId)
-                {
-                    case 1:
-                        Query = SQL.DeleteCompanyMaaDurga;
-                        break;
-                }
+                parameters.Add("CompanyId", CompanyId, DbType.Int32);            
                 using (var connection = dbconnection)
                 {
-                    return await connection.ExecuteAsync(Query, parameters);
+                    return await connection.ExecuteAsync(SQL.DeleteCompanyByTenantId, parameters);
                 }
             }
             catch (Exception ex)
