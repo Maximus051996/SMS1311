@@ -29,7 +29,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddCors((builder) => {
     builder.AddPolicy("default", (options) =>
     {
-        options.AllowAnyHeader().AllowAnyHeader().AllowAnyOrigin();
+        options.AllowAnyHeader().AllowAnyHeader().AllowAnyOrigin().WithExposedHeaders("Content-Disposition");
     });
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

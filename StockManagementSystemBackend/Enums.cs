@@ -33,7 +33,9 @@ namespace StockManagementSystemBackend
         [Description("User not have Permission")]
         UserInvalid=14,
         [Description("Record Deleted Successfully")]
-        HardDelete
+        HardDelete=15,
+        [Description("File Downloaded Successfully")]
+        Download =16
 
     }
 

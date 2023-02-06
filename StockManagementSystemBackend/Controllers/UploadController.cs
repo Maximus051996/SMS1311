@@ -28,7 +28,7 @@ namespace StockManagementSystemBackend.Controllers
             _ITenant = ITenant;
         }
 
-        [HttpPost("Upload")]
+        [HttpPost("UploadExcel")]
         public async Task<IActionResult> UploadExcel(string fileType, string tenantName, string userName)
         {
 
