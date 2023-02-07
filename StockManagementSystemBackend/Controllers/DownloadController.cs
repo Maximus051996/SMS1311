@@ -11,6 +11,7 @@ namespace StockManagementSystemBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class DownloadController : ControllerBase
     {
         public IConfiguration _configuration;
