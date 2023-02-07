@@ -11,7 +11,6 @@ namespace StockManagementSystemBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles = "Admin")]
     public class DownloadController : ControllerBase
     {
         public IConfiguration _configuration;
@@ -28,7 +27,7 @@ namespace StockManagementSystemBackend.Controllers
         }
 
 
-        [HttpGet("DownloadExcel")]  // Code Has issue
+        [HttpGet("DownloadExcel")]  
         public async Task<IActionResult> DownloadExcel(string fileType, string tenantName, string userName)
         {
             int tenantId;
